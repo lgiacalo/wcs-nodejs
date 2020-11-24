@@ -1,3 +1,3 @@
 # Wild Code School : NodeJS
 
-![CowSay](./image_cow.png)
+![cowSay](./exo_CowSay/image_cow.png)
