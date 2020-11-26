@@ -7,16 +7,16 @@ const port = 3000;
 
 // MOVIES ///////////////////////////////////////////////////////////////////////////////
 app.get("/api/movies", (req, res) => {
-  let sql = "SELECT * FROM movie WHERE 1 = 1 ";
+  let sql = "SELECT * FROM movie WHERE 1 = 1";
   const sqlValues = [];
 
   if (req.query.rating) {
-    sql += "AND rating = ?";
+    sql += " AND rating = ?";
     sqlValues.push(req.query.rating);
   }
 
   if (req.query.genre) {
-    sql += "AND genre = ?";
+    sql += " AND genre = ?";
     sqlValues.push(req.query.genre);
   }
 
