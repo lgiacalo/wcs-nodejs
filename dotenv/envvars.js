@@ -1,0 +1,1 @@
+console.log(`You are ${process.env.USER} and your home dir is ${process.env.HOME}`);
