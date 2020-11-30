@@ -1,4 +1,5 @@
 const express = require("express");
+const { body, validationResult, matchedData } = require("express-validator");
 const connection = require("./conf");
 
 const app = express();
@@ -11,6 +12,43 @@ app.use(
   express.urlencoded({
     extended: true,
   })
+);
+
+// USERS ==> POST
+app.post(
+  "/api/users",
+  [
+    body("firstname").isLength({ min: 3 }),
+    body("lastname").isLength({ min: 3 }),
+    body("email").isEmail(),
+  ],
+  (req, res) => {
+    const errors = validationResult(req);
+    console.log(errors);
+    if (!errors.isEmpty())
+      return res.status(422).json({ errors: errors.array() });
+
+    const data = matchedData(req);
+    connection.query("INSERT INTO users SET ?", data, (err, results) => {
+      if (err)
+        return res.status(500).json({ error: err.message, sql: err.sql });
+
+      connection.query(
+        "SELECT * FROM users WHERE id = ?",
+        results.insertId,
+        (err2, records) => {
+          if (err2)
+            return res.status(500).json({ error: err2.message, sql: err2.sql });
+
+          const user = records[0];
+          const host = req.get("host");
+          const location = `http://${host}/${req.url}/${user.id}`;
+
+          return res.status(201).set("Location", location).json(user);
+        }
+      );
+    });
+  }
 );
 
 // MOVIES
